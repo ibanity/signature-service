@@ -1,0 +1,4 @@
+ibanity:
+  key-id: "410ec31d-c97c-4e42-b144-d3124b484b19"
+  private-key:
+    path: "./private_key.pem"
