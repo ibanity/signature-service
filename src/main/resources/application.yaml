@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: ibanity-signature-service
+  main:
+    banner-mode: "off"
+
+ibanity:
+  key-id: ${IBANITY_KEY_ID}
+  private-key:
+    path: ${IBANITY_PRIVATE_KEY_PATH}
