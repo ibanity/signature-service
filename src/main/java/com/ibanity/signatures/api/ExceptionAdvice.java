@@ -6,7 +6,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.lang.Nullable;
 import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -17,6 +16,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import org.springframework.web.util.WebUtils;
 
 import com.ibanity.signatures.services.exception.EncryptionException;
+import com.ibanity.signatures.services.exception.PayloadException;
 import com.ibanity.signatures.services.exception.SignaturePartsException;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -38,13 +38,13 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
         return ResponseEntity.internalServerError().build();
     }
 
-    @Override
-    public ResponseEntity<Object> handleHttpMessageNotReadable(
-        HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+	@ExceptionHandler(PayloadException.class)
+    public ResponseEntity<?> handlePayloadException(PayloadException e) {
+        logger.error("# PayloadException", e);
 
-        ProblemDetail body = createProblemDetail(ex, status, ex.getMessage(), null, null, request);
+		ProblemDetail body = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(400), e.getMessage());
 
-		return handleExceptionInternal(ex, body, headers, status, request);
+        return ResponseEntity.of(body).build();
     }
 
     @Override

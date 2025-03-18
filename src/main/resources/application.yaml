@@ -8,3 +8,8 @@ ibanity:
   key-id: ${IBANITY_KEY_ID}
   private-key:
     path: ${IBANITY_PRIVATE_KEY_PATH}
+
+logging:
+  level:
+    com:
+      ibanity: ${LOGGING_LEVEL:INFO}    

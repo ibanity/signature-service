@@ -61,6 +61,14 @@ public class SignatureParts implements Iterable<SignaturePart> {
     }
 
     @Override
+    public String toString() {
+        return signatureParts.stream()
+                .map(SignaturePart::toString)
+                .collect(Collectors.joining(", "))
+                .trim();
+    }
+
+    @Override
     public Iterator<SignaturePart> iterator() {
         return new SignaturePartsIterator();
     }

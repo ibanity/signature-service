@@ -8,5 +8,6 @@ services:
     environment:
       - IBANITY_KEY_ID=${IBANITY_KEY_ID}
       - IBANITY_PRIVATE_KEY_PATH=/usr/app/keys/private_key.pem
+      - LOGGING_LEVEL=${LOGGING_LEVEL}
     volumes:
       - ${IBANITY_PRIVATE_KEY_PATH_LOCAL}:/usr/app/keys/private_key.pem

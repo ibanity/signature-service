@@ -14,4 +14,9 @@ public abstract class SignaturePart {
         return this.name;
     }
 
+    @Override
+    public String toString() {
+        return "name=" + name + ", value=" + value();
+    }
+
 }

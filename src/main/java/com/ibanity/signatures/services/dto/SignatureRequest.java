@@ -7,36 +7,25 @@ import static java.util.Objects.requireNonNullElse;
 
 import java.util.UUID;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.ibanity.signatures.domain.HttpMethod;
 import com.ibanity.signatures.services.exception.PayloadException;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-
 public class SignatureRequest {
 
-    @NotBlank
     private String host;
-    @NotBlank
     private String path;
-    @NotNull
     private HttpMethod method;
     private String payload;
     private String authorization;
     private UUID ibanityIdempotencyKey;
 
-    public SignatureRequest() {}
-
-    @JsonCreator
-    public SignatureRequest(
-        @JsonProperty("host") String host, 
-        @JsonProperty("path") String path, 
-        @JsonProperty("method") HttpMethod method, 
-        @JsonProperty("payload") String payload,
-        @JsonProperty("authorization") String authorization, 
-        @JsonProperty("ibanityIdempotencyKey") UUID ibanityIdempotencyKey) {
+    private SignatureRequest(
+        String host,
+        String path,
+        HttpMethod method,
+        String payload,
+        String authorization,
+        UUID ibanityIdempotencyKey) {
         this.host = host;
         this.path = path;
         this.method = method;
@@ -79,6 +68,15 @@ public class SignatureRequest {
 
     public UUID getIbanityIdempotencyKey() {
         return ibanityIdempotencyKey;
+    }
+
+    @Override
+    public String toString() {
+        return """
+            host=%s, path=%s, method=%s, payload=%s, authorization=%s, ibanityIdempotencyKey=%s
+        """
+        .trim()
+        .formatted(host, path, method, payload, authorization, ibanityIdempotencyKey);
     }
 
     public static Builder builder() {
