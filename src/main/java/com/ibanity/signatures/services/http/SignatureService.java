@@ -12,6 +12,9 @@ import java.security.spec.MGF1ParameterSpec;
 import java.security.spec.PSSParameterSpec;
 import java.util.Base64;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.ibanity.signatures.services.exception.EncryptionException;
 
 public class SignatureService {
@@ -19,7 +22,8 @@ public class SignatureService {
     private static final String SIGNATURE_ALGORITHM = "RSASSA-PSS";
     private static final PSSParameterSpec PARAMETER_SPEC = new PSSParameterSpec("SHA-256", "MGF1",
             MGF1ParameterSpec.SHA256, 32, 1);
-
+    private static final Logger LOG = LoggerFactory.getLogger(SignatureService.class);
+    
     private final PrivateKey privateKey;
 
     public SignatureService(PrivateKey privateKey) {
@@ -27,6 +31,8 @@ public class SignatureService {
     }
 
     public String sign(String toSign) {
+        LOG.trace("# sign(toSign: String {})", toSign);
+
         try {
             Signature signature = Signature.getInstance(SIGNATURE_ALGORITHM);
 
@@ -36,11 +42,9 @@ public class SignatureService {
 
             byte[] signedData = signature.sign();
 
-            return new String(
-                Base64.getEncoder().encode(signedData),
-                UTF_8
-            );
-        } catch (InvalidAlgorithmParameterException | NoSuchAlgorithmException | SignatureException | InvalidKeyException e) {
+            return new String(Base64.getEncoder().encode(signedData), UTF_8);
+        } catch (InvalidAlgorithmParameterException | NoSuchAlgorithmException | SignatureException
+                | InvalidKeyException e) {
             throw new EncryptionException("Error while trying to generate the signature", e);
         }
 
