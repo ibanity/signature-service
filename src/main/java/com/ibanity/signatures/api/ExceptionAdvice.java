@@ -38,39 +38,39 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
         return ResponseEntity.internalServerError().build();
     }
 
-	@ExceptionHandler(PayloadException.class)
+    @ExceptionHandler(PayloadException.class)
     public ResponseEntity<?> handlePayloadException(PayloadException e) {
         logger.error("# PayloadException", e);
 
-		ProblemDetail body = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(400), e.getMessage());
+        ProblemDetail body = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(400), e.getMessage());
 
         return ResponseEntity.of(body).build();
     }
 
     @Override
     public ResponseEntity<Object> handleExceptionInternal(
-			Exception ex, @Nullable Object body, HttpHeaders headers, HttpStatusCode statusCode, WebRequest request) {
+            Exception ex, @Nullable Object body, HttpHeaders headers, HttpStatusCode statusCode, WebRequest request) {
         logger.error("# " + ex.getClass(), ex);
         
-		if (request instanceof ServletWebRequest servletWebRequest) {
-			HttpServletResponse response = servletWebRequest.getResponse();
-			if (response != null && response.isCommitted()) {
-				if (logger.isWarnEnabled()) {
-					logger.warn("Response already committed. Ignoring: " + ex);
-				}
-				return null;
-			}
-		}
+        if (request instanceof ServletWebRequest servletWebRequest) {
+            HttpServletResponse response = servletWebRequest.getResponse();
+            if (response != null && response.isCommitted()) {
+                if (logger.isWarnEnabled()) {
+                    logger.warn("Response already committed. Ignoring: " + ex);
+                }
+                return null;
+            }
+        }
 
-		if (body == null && ex instanceof ErrorResponse errorResponse) {
-			body = errorResponse.updateAndGetBody(super.getMessageSource(), LocaleContextHolder.getLocale());
-		}
+        if (body == null && ex instanceof ErrorResponse errorResponse) {
+            body = errorResponse.updateAndGetBody(super.getMessageSource(), LocaleContextHolder.getLocale());
+        }
 
-		if (statusCode.equals(HttpStatus.INTERNAL_SERVER_ERROR) && body == null) {
-			request.setAttribute(WebUtils.ERROR_EXCEPTION_ATTRIBUTE, ex, WebRequest.SCOPE_REQUEST);
-		}
+        if (statusCode.equals(HttpStatus.INTERNAL_SERVER_ERROR) && body == null) {
+            request.setAttribute(WebUtils.ERROR_EXCEPTION_ATTRIBUTE, ex, WebRequest.SCOPE_REQUEST);
+        }
 
-		return createResponseEntity(body, headers, statusCode, request);
-	}
+        return createResponseEntity(body, headers, statusCode, request);
+    }
 
 }
