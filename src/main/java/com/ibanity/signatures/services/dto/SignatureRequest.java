@@ -31,10 +31,10 @@ public class SignatureRequest {
         this.method = method;
         this.ibanityIdempotencyKey = ibanityIdempotencyKey;
         this.authorization = authorization;
-        this.payload = getPayload(method, payload);
+        this.payload = createPayload(method, payload);
     }
 
-    private String getPayload(HttpMethod method, String payload) {
+    private String createPayload(HttpMethod method, String payload) {
         if (payloadRequired(method) && isNull(payload)) {
             throw new PayloadException();
         }
